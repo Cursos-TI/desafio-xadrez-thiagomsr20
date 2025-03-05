@@ -1,32 +1,115 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-// Desafio de Xadrez - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de movimentação das peças de xadrez.
-// O objetivo é utilizar estruturas de repetição e funções para determinar os limites de movimentação dentro do jogo.
+#define TAMANHO_TABULEIRO 8
 
-int main() {
-    // Nível Novato - Movimentação das Peças
-    // Sugestão: Declare variáveis constantes para representar o número de casas que cada peça pode se mover.
+// Função para inicializar o tabuleiro com espaços vazios
+void inicializarTabuleiro(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO])
+{
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++)
+    {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++)
+        {
+            tabuleiro[i][j] = '.';
+        }
+    }
+}
 
-    // Implementação de Movimentação do Bispo
-    // Sugestão: Utilize uma estrutura de repetição para simular a movimentação do Bispo em diagonal.
+// Função para imprimir o tabuleiro
+void imprimirTabuleiro(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO])
+{
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++)
+    {
+        for (int j = 0; j < TAMANHO_TABULEIRO; j++)
+        {
+            printf("%c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
 
-    // Implementação de Movimentação da Torre
-    // Sugestão: Utilize uma estrutura de repetição para simular a movimentação da Torre para a direita.
+// Função para mover a Torre
+void moverTorre(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int x, int y)
+{
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++)
+    {
+        tabuleiro[x][i] = 'T';
+        tabuleiro[i][y] = 'T';
+    }
+}
 
-    // Implementação de Movimentação da Rainha
-    // Sugestão: Utilize uma estrutura de repetição para simular a movimentação da Rainha para a esquerda.
+// Função para mover o Bispo
+void moverBispo(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int x, int y)
+{
+    for (int i = 0; i < TAMANHO_TABULEIRO; i++)
+    {
+        if (x + i < TAMANHO_TABULEIRO && y + i < TAMANHO_TABULEIRO)
+            tabuleiro[x + i][y + i] = 'B';
 
-    // Nível Aventureiro - Movimentação do Cavalo
-    // Sugestão: Utilize loops aninhados para simular a movimentação do Cavalo em L.
-    // Um loop pode representar a movimentação horizontal e outro vertical.
+        if (x - i >= 0 && y - i >= 0)
+            tabuleiro[x - i][y - i] = 'B';
 
-    // Nível Mestre - Funções Recursivas e Loops Aninhados
-    // Sugestão: Substitua as movimentações das peças por funções recursivas.
-    // Exemplo: Crie uma função recursiva para o movimento do Bispo.
+        if (x + i < TAMANHO_TABULEIRO && y - i >= 0)
+            tabuleiro[x + i][y - i] = 'B';
+        if (x - i >= 0 && y + i < TAMANHO_TABULEIRO)
+            tabuleiro[x - i][y + i] = 'B';
+    }
+}
 
-    // Sugestão: Implemente a movimentação do Cavalo utilizando loops com variáveis múltiplas e condições avançadas.
-    // Inclua o uso de continue e break dentro dos loops.
+// Função para mover a Rainha
+void moverRainha(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int x, int y)
+{
+    moverTorre(tabuleiro, x, y);
+    moverBispo(tabuleiro, x, y);
+}
 
+// Função para mover o Cavalo
+void moverCavalo(char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int x, int y)
+{
+    int movimentos[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+    for (int i = 0; i < 8; i++)
+    {
+        int novoX = x + movimentos[i][0];
+        int novoY = y + movimentos[i][1];
+        if (novoX >= 0 && novoX < TAMANHO_TABULEIRO && novoY >= 0 && novoY < TAMANHO_TABULEIRO)
+        {
+            tabuleiro[novoX][novoY] = 'C';
+        }
+    }
+}
+
+int main()
+{
+    char tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO];
+    inicializarTabuleiro(tabuleiro);
+
+    int x, y;
+    char peca;
+
+    printf("Digite a peça (T para Torre, B para Bispo, R para Rainha, C para Cavalo): ");
+    scanf(" %c", &peca);
+    printf("Digite a posição inicial (x y): ");
+    scanf("%d %d", &x, &y);
+
+    switch (peca)
+    {
+    case 'T':
+        moverTorre(tabuleiro, x, y);
+        break;
+    case 'B':
+        moverBispo(tabuleiro, x, y);
+        break;
+    case 'R':
+        moverRainha(tabuleiro, x, y);
+        break;
+    case 'C':
+        moverCavalo(tabuleiro, x, y);
+        break;
+    default:
+        printf("Peça inválida!\n");
+        return 1;
+    }
+
+    imprimirTabuleiro(tabuleiro);
     return 0;
 }
